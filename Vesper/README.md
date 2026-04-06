@@ -6,8 +6,6 @@
 ╚████╔╝ ███████╗███████║██║     ███████╗██║  ██║
 ╚═══╝  ╚══════╝╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝
 
-**An aggressive red team multi-tool — built in C++ for security researchers**
-
 ![Status](https://img.shields.io/badge/status-in%20development-red?style=flat-square)
 ![Platform](https://img.shields.io/badge/platform-Windows-blue?style=flat-square)
 ![Language](https://img.shields.io/badge/language-C%2B%2B%20%2F%20CLR-informational?style=flat-square)
@@ -20,74 +18,69 @@
 
 ## Overview
 
-Vesper is an offensive security multi-tool built in C++ using Windows Forms (CLR). Designed for red team operations, it consolidates reconnaissance, network analysis, exploitation assistance, and post-exploitation utilities into a single dark, minimal interface.
+Vesper is an offensive security multi-tool built in C++ using Windows Forms (CLR). Reconnaissance, network analysis, exploitation assistance, and post-exploitation — one interface.
 
-The name is intentional — Vesper, the evening star. The last light before darkness.
-
-> ⚠️ This tool is intended for authorized security research and penetration testing only. Use responsibly.
+> ⚠️ For authorized penetration testing and security research only.
 
 ---
 
-## Current State
+## Modules
 
 | Module | Status |
 |---|---|
-| Splash Screen | ✅ Complete |
-| Main Window Shell | ✅ Complete |
-| Reconnaissance | ⏳ Planned |
-| Network Analysis | ⏳ Planned |
-| Exploitation Assistance | ⏳ Planned |
-| Post Exploitation | ⏳ Planned |
-| Reporting | ⏳ Planned |
+| Splash Screen |  Complete |
+| Main Window Shell |  Complete |
+| Reconnaissance |  Planned |
+| Network Analysis |  Planned |
+| Exploitation Assistance |  Planned |
+| Post Exploitation |  Planned |
+| Reporting |  Planned |
 
 ---
 
-## Project Structure
+## Structure
 Vesper/
-├── Vesper.cpp          — Application entry point
-├── SplashScreen.h      — Animated splash screen
-├── SplashScreen.cpp    — Splash implementation
-├── MainWindow.h        — Main UI shell
-├── MainWindow.cpp      — Main window implementation
-├── Assets/             — Logo and icons
-├── Vesper.vcxproj      — MSVC project file
-└── Vesper.sln          — Solution file
+├── Vesper.cpp
+├── SplashScreen.h
+├── SplashScreen.cpp
+├── MainWindow.h
+├── MainWindow.cpp
+├── Assets/
+├── Vesper.vcxproj
+└── Vesper.sln
 
 ---
 
-## Getting Started
-
-### Prerequisites
-
-- Windows 10 / 11
-- Visual Studio (with C++/CLR workload)
-- .NET Framework 4.7.2+
-
-### Clone & Build
+## Build
 ```bash
 git clone https://github.com/X3N0L4T/xenolat-lab.git
 cd xenolat-lab/Vesper
 ```
 
-Open `Vesper.sln` in Visual Studio and press **F5**.
+Open `Vesper.sln` in Visual Studio → **F5**
+
+**Requirements**
+- Windows 10 / 11
+- Visual Studio with C++/CLR workload
+- .NET Framework 4.7.2+
 
 ---
 
-## Tech Stack
+## Stack
 
 | Component | Technology |
 |---|---|
-| UI Framework | Windows Forms (C++/CLR) |
+| UI | Windows Forms (C++/CLR) |
 | Language | C++/CLI |
-| Build System | MSVC / Visual Studio |
+| Build | MSVC / Visual Studio |
 
 ---
 
 ## Roadmap
 
-- [x] Project scaffold and repo setup
-- [x] Animated splash screen with logo
-- [x] Main window shell with looping scramble header
+- [x] Project scaffold
+- [x] Animated splash screen
+- [x] Main window with scramble header
 - [ ] Reconnaissance module
 - [ ] Network analysis module
 - [ ] Exploitation assistance module
@@ -98,16 +91,10 @@ Open `Vesper.sln` in Visual Studio and press **F5**.
 
 ## Disclaimer
 
-Vesper is developed strictly for authorized penetration testing and security research. The author is not responsible for any misuse or damage caused by this tool. Always obtain proper authorization before testing any system.
-
----
-
-## License
-
-MIT License — see [`LICENSE`](LICENSE) for details.
+Vesper is built for authorized security research and penetration testing only. The author holds no responsibility for misuse. Always obtain proper written authorization before engaging any system.
 
 ---
 
 <div align="center">
-<sub>Vesper · Built from scratch · C++ · Windows · 2026</sub>
+<sub>Vesper · C++ · Windows · 2026</sub>
 </div>
