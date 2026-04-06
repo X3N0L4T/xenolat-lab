@@ -1,116 +1,82 @@
 #pragma once
+//#include "MainWindow.h"
 
 namespace Vesper {
-
+	
 	using namespace System;
 	using namespace System::Windows::Forms;
 	using namespace System::Drawing;
 
-	enum Phase { FADE_IN, SCRAMBLE, MOVE_UP, DONE };
+	enum Phase { FADE_IN, HOLD, FADE_OUT, DONE };
 
 	public ref class SplashScreen : public Form {
 	public:
 		SplashScreen() {
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
-			this->BackColor = Color::FromArgb(10, 10, 10);
-			this->Opacity = 0.0;
+			this->BackColor = Color::FromArgb(5, 5, 5);
+			this-> Opacity = 0.0;
 			this->StartPosition = FormStartPosition::CenterScreen;
-			this->Size = Drawing::Size(700, 400);
+			this->Size = Drawing::Size(800, 533);
 			this->TopMost = true;
 
-			scrambleChars = L"!@#$%^&*01{}[]<>?/\\|~'ABCDEFabcdef";
-			targetWorld = L"Vesper";
-			resolveCount = 0;
-			scrambleTick = 0;
-			scrambleLimit = 10;
-			targetY = 40;
-			rng = gcnew Random();
+			//Load
+			String^ basePath = AppDomain::CurrentDomain->BaseDirectory;
+			String^ logoPath = System::IO::Path::Combine(basePath, "Assets\\vesper.png");
 
-			label = gcnew Label();
-			label->Text = BuildScrambleText();
-			label->ForeColor = Color::FromArgb(255, 255, 255);
-			label->Font = gcnew Drawing::Font("Courier New", 56, FontStyle::Bold);
-			label->AutoSize = true;
-			label->BackColor = Color::Transparent;
-			this->Controls->Add(label);
+			logoBox = gcnew PictureBox();
+			logoBox->Image = Image::FromFile(logoPath);
+			logoBox->SizeMode = PictureBoxSizeMode::Zoom;
+			logoBox->Size = Drawing::Size(800, 533);
+			logoBox->BackColor = Color::Transparent;
+			logoBox->Left = 0;
+			logoBox->Top = 0;
+			this->Controls->Add(logoBox);
+
+			holdTicks = 0;
+			phase = FADE_IN;
 
 			timer = gcnew Timer();
 			timer->Interval = 16;
 			timer->Tick += gcnew EventHandler(this, &SplashScreen::OnTick);
 			timer->Start();
-
-			phase = FADE_IN;
 		}
 
 	private:
-		Label^ label;
+		PictureBox^ logoBox;
 		Timer^ timer;
 		Phase phase;
-		int targetY;
-		String^ targetWorld;
-		String^ scrambleChars;
-		int resolveCount;
-		int scrambleTick;
-		int scrambleLimit;
-		Random^ rng;
-
-		wchar_t GetRandomChar() {
-			return scrambleChars[rng->Next(scrambleChars->Length)];
-		}
-
-		String^ BuildScrambleText() {
-			System::Text::StringBuilder^ sb = gcnew System::Text::StringBuilder();
-
-			//resolve letters
-			for (int i = 0; i < resolveCount; i++) {
-				sb->Append(targetWorld[i]);
-			}
-
-			//remainig letters
-			for (int i = resolveCount; i < targetWorld->Length; i++) {
-				sb->Append(GetRandomChar());
-			}
-
-			return sb->ToString();
-		}
+		int holdTicks;
 
 		void OnTick(Object^ sender, EventArgs^ e) {
-			label->Left = (this->ClientSize.Width - label->Width) / 2;
-
 			if (phase == FADE_IN) {
 				this->Opacity += 0.02;
-				label->Text = BuildScrambleText();
-				label->Top = (this->ClientSize.Height - label->Height) / 2;
-
 				if (this->Opacity >= 1.0) {
 					this->Opacity = 1.0;
-					phase = SCRAMBLE;
+					phase = HOLD;
 				}
 			}
-			else if (phase == SCRAMBLE) {
-				scrambleTick++;
-				label->Text = BuildScrambleText();
-
-				if (scrambleTick >= scrambleLimit) {
-					scrambleTick = 0;
-					resolveCount++;
-
-					if (resolveCount >= targetWorld->Length) {
-						label->Text = targetWorld;
-						phase = MOVE_UP;
-					}
+			else if (phase == HOLD) {
+				holdTicks++;
+				//hold 1sec
+				if (holdTicks >= 60) {
+					phase = FADE_OUT;
 				}
 			}
-			else if (phase == MOVE_UP) {
-				if (label->Top > targetY) {
-					label->Top -= 3;
-				}
-				else {
-					label->Top = targetY;
+			else if (phase == FADE_OUT) {
+				this->Opacity -= 0.02;
+				if (this->Opacity <= 0.0) {
+					this->Opacity = 0.0;
 					phase = DONE;
 					timer->Stop();
+					LaunchMainWindow();
 				}
 			}
+		}
+
+		void LaunchMainWindow() {
+			//inWindow^ main = gcnew MainWindow();
+			//in->Show();
+			this->Close();
 		}
 	protected:
 		~SplashScreen() {

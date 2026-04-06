@@ -1,4 +1,5 @@
 #include "SplashScreen.h"
+#include "MainWindow.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
@@ -7,5 +8,9 @@ using namespace System::Windows::Forms;
 void main() {
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
-	Application::Run(gcnew Vesper::SplashScreen());
+
+	Vesper::SplashScreen^ splash = gcnew Vesper::SplashScreen();
+	splash->ShowDialog();
+
+	Application::Run(gcnew Vesper::MainWindow());
 }
