@@ -1,12 +1,6 @@
-
-██╗   ██╗███████╗███████╗██████╗ ███████╗██████╗
-██║   ██║██╔════╝██╔════╝██╔══██╗██╔════╝██╔══██╗
-██║   ██║█████╗  ███████╗██████╔╝█████╗  ██████╔╝
-╚██╗ ██╔╝██╔══╝  ╚════██║██╔═══╝ ██╔══╝  ██╔══██╗
-╚████╔╝ ███████╗███████║██║     ███████╗██║  ██║
-  ╚═══╝  ╚══════╝╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝
-
 <div align="center">
+
+<img src="Vesper/Assets/vesper.png" width="300"/>
 
 ![Status](https://img.shields.io/badge/status-in%20development-red?style=flat-square)
 ![Platform](https://img.shields.io/badge/platform-Windows-blue?style=flat-square)
