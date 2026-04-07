@@ -21,7 +21,7 @@ namespace Vesper {
             resolvedCount = 0;
             scrambleTick = 0;
             scrambleLimit = 8;
-            looping = true;
+            //looping = true;
             rng = gcnew Random();
 
             // Title label — top center
@@ -42,6 +42,25 @@ namespace Vesper {
             separator->Left = 0;
             this->Controls->Add(separator);
 
+            //Tray
+            String^ basePath = AppDomain::CurrentDomain->BaseDirectory;
+            String^ icoPath = System::IO::Path::Combine(basePath, "Assets\\vesper.ico");
+            this->Icon = gcnew System::Drawing::Icon(icoPath);
+            trayIcon = gcnew NotifyIcon();
+            trayIcon->Icon = gcnew System::Drawing::Icon(icoPath);
+            trayIcon->Text = L"Vesper";
+            trayIcon->Visible = true;
+
+            //Tray click
+            trayMenu = gcnew System::Windows::Forms::ContextMenuStrip();
+            trayMenu->Items->Add(L"Open", nullptr, gcnew EventHandler(this, &MainWindow::OnTrayOpen));
+            trayMenu->Items->Add(L"-");
+            trayMenu->Items->Add(L"Exit", nullptr, gcnew EventHandler(this, &MainWindow::OnTrayExit));
+            trayIcon->ContextMenuStrip = trayMenu;
+
+            //Double click tray
+            trayIcon->DoubleClick += gcnew EventHandler(this, &MainWindow::OnTrayOpen);
+
             // Scramble timer — slower tick for performance
             scrambleTimer = gcnew Timer();
             scrambleTimer->Interval = 50;
@@ -56,12 +75,14 @@ namespace Vesper {
         Label^ titleLabel;
         Panel^ separator;
         Timer^ scrambleTimer;
+        NotifyIcon^ trayIcon;
+        System::Windows::Forms::ContextMenuStrip^ trayMenu;
         String^ targetWord;
         String^ scrambleChars;
         int     resolvedCount;
         int     scrambleTick;
         int     scrambleLimit;
-        bool    looping;
+        //bool    looping;
         Random^ rng;
 
         wchar_t GetRandomChar() {
@@ -102,9 +123,36 @@ namespace Vesper {
             titleLabel->Left = (this->ClientSize.Width - titleLabel->Width) / 2;
         }
 
+        //Minimize
+        void OnFormClosing(Object^ sender, FormClosingEventArgs^ e) {
+            if (e->CloseReason == CloseReason::UserClosing) {
+                e->Cancel = true;
+                this->Hide();
+                trayIcon->ShowBalloonTip(1000, L"Vesper", L"Running in background", ToolTipIcon::None);
+            }
+        }
+
+        void OnResize(Object^ sender, EventArgs^ e) {
+            if (this->WindowState == FormWindowState::Minimized) {
+                this->Hide();
+            }
+        }
+
+        void OnTrayOpen(Object^ sender, EventArgs^ e) {
+            this->Show();
+            this->WindowState = FormWindowState::Normal;
+            this->BringToFront();
+        }
+
+        void OnTrayExit(Object^ sender, EventArgs^ e) {
+            trayIcon->Visible = false;
+            Application::Exit();
+        }
+
     protected:
         ~MainWindow() {
             if (scrambleTimer != nullptr) scrambleTimer->Stop();
+            if (trayIcon != nullptr) trayIcon->Visible = false;
         }
     };
 }
