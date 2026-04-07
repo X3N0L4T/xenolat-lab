@@ -130,6 +130,7 @@
     <ClInclude Include="MainWindow.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SplashScreen.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -139,6 +140,10 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </Image>
+    <Image Include="..\x64\Debug\Assets\vesper.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Vesper.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
