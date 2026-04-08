@@ -22,6 +22,7 @@ namespace Vesper {
             this->Icon = gcnew System::Drawing::Icon(icoPath);
 
             BuildSidebar();
+            BuildTopBar();
             BuildTrayIcon(icoPath);
 
             this->Shown += gcnew EventHandler(this, &MainWindow::OnShown);
@@ -31,9 +32,12 @@ namespace Vesper {
 
     private:
         // Sidebar controls
+        // Sidebar scramble
         Panel^ sidebar;
         Label^ sidebarTitle;
-        // Sidebar scramble
+        Panel^ topBar;
+        TextBox^ searchBox;
+        Button^ newTaskBtn;
         String^ scrambleChars;
         String^ targetWord;
         int     resolvedCount;
@@ -81,7 +85,7 @@ namespace Vesper {
             Panel^ topDivider = gcnew Panel();
             topDivider->BackColor = Color::FromArgb(180, 0, 0);
             topDivider->Size = Drawing::Size(240, 1);
-            topDivider->Location = Point(0, 70);
+            topDivider->Location = Point(0, 54);
             sidebar->Controls->Add(topDivider);
 
             // Nav items
@@ -144,6 +148,61 @@ namespace Vesper {
             trayMenu->Items->Add(L"Exit", nullptr, gcnew EventHandler(this, &MainWindow::OnTrayExit));
             trayIcon->ContextMenuStrip = trayMenu;
             trayIcon->DoubleClick += gcnew EventHandler(this, &MainWindow::OnTrayOpen);
+        }
+
+        void BuildTopBar() {
+            topBar = gcnew Panel();
+            topBar->BackColor = Color::FromArgb(12, 12, 12);
+            topBar->Size = Drawing::Size(1110, 55);
+            topBar->Location = Point(240, 0);
+            this->Controls->Add(topBar);
+
+            //Bottom
+            Panel^ topBarBorder = gcnew Panel();
+            topBarBorder->BackColor = Color::FromArgb(180, 0, 0);
+            topBarBorder->Size = Drawing::Size(1110, 1);
+            topBarBorder->Location = Point(0, 54);
+            topBar->Controls->Add(topBarBorder);
+
+            //Search
+            searchBox = gcnew TextBox();
+            searchBox->Text = L"Search...";
+            searchBox->ForeColor = Color::FromArgb(120, 120, 120);
+            searchBox->BackColor = Color::FromArgb(22, 22, 22);
+            searchBox->Font = gcnew Drawing::Font("Courier New", 10, FontStyle::Regular);
+            searchBox->Size = Drawing::Size(300, 30);
+            searchBox->Location = Point(20, 12);
+            searchBox->BorderStyle = BorderStyle::FixedSingle;
+            searchBox->Enter += gcnew EventHandler(this, &MainWindow::OnSearchFocus);
+            searchBox->Leave += gcnew EventHandler(this, &MainWindow::OnSearchUnFocus);
+            topBar->Controls->Add(searchBox);
+
+            //New task
+            newTaskBtn = gcnew Button();
+            newTaskBtn->Text = L"+ NEW TASK";
+            newTaskBtn->ForeColor = Color::White;
+            newTaskBtn->BackColor = Color::FromArgb(180, 0, 0);
+            newTaskBtn->Font = gcnew Drawing::Font("Courier New", 9, FontStyle::Bold);
+            newTaskBtn->Size = Drawing::Size(120, 32);
+            newTaskBtn->Location = Point(970, 11);
+            newTaskBtn->FlatStyle = FlatStyle::Flat;
+            newTaskBtn->FlatAppearance->BorderSize = 0;
+            newTaskBtn->Cursor = Cursors::Hand;
+            topBar->Controls->Add(newTaskBtn);
+        }
+
+        void OnSearchFocus(Object^ sender, EventArgs^ e) {
+            if (searchBox->Text == L"Search...") {
+                searchBox->Text = L"";
+                searchBox->ForeColor = Color::White;
+            }
+        }
+
+        void OnSearchUnFocus(Object^ sender, EventArgs^ e) {
+            if (searchBox->Text == L"") {
+                searchBox->Text = L"Search...";
+                searchBox->ForeColor = Color::FromArgb(120, 120, 120);
+            }
         }
 
         void OnShown(Object^ sender, EventArgs^ e) {}
