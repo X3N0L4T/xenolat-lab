@@ -12,129 +12,152 @@ namespace Vesper {
             this->Text = L"Vesper";
             this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
             this->BackColor = Color::FromArgb(5, 5, 5);
-            this->Size = Drawing::Size(1100, 700);
+            this->Size = Drawing::Size(1350, 900);
             this->StartPosition = FormStartPosition::CenterScreen;
             this->MaximizeBox = false;
 
-            scrambleChars = L"!@#$%^&*01{}[]<>?/\\|~`ABCDEFabcdef";
-            targetWord = L"Vesper";
-            resolvedCount = 0;
-            scrambleTick = 0;
-            scrambleLimit = 8;
-            //looping = true;
-            rng = gcnew Random();
-
-            // Title label — top center
-            titleLabel = gcnew Label();
-            titleLabel->Text = targetWord;
-            titleLabel->ForeColor = Color::FromArgb(0, 255, 65);
-            titleLabel->Font = gcnew Drawing::Font("Courier New", 28, FontStyle::Bold);
-            titleLabel->AutoSize = true;
-            titleLabel->BackColor = Color::Transparent;
-            titleLabel->Top = 14;
-            this->Controls->Add(titleLabel);
-
-            // Separator line under title
-            separator = gcnew Panel();
-            separator->BackColor = Color::FromArgb(0, 255, 65);
-            separator->Size = Drawing::Size(1100, 1);
-            separator->Top = 65;
-            separator->Left = 0;
-            this->Controls->Add(separator);
-
-            //Tray
+            // Load icon
             String^ basePath = AppDomain::CurrentDomain->BaseDirectory;
             String^ icoPath = System::IO::Path::Combine(basePath, "Assets\\vesper.ico");
             this->Icon = gcnew System::Drawing::Icon(icoPath);
+
+            BuildSidebar();
+            BuildTrayIcon(icoPath);
+
+            this->Shown += gcnew EventHandler(this, &MainWindow::OnShown);
+            this->Resize += gcnew EventHandler(this, &MainWindow::OnResize);
+            this->FormClosing += gcnew FormClosingEventHandler(this, &MainWindow::OnFormClosing);
+        }
+
+    private:
+        // Sidebar controls
+        Panel^ sidebar;
+        Label^ sidebarTitle;
+        // Sidebar scramble
+        String^ scrambleChars;
+        String^ targetWord;
+        int     resolvedCount;
+        int     scrambleTick;
+        int     scrambleLimit;
+        int     idleTick;
+        bool    scrambling;
+        Random^ rng;
+        Timer^ scrambleTimer;
+
+        // Tray
+        NotifyIcon^ trayIcon;
+        System::Windows::Forms::ContextMenuStrip^ trayMenu;
+
+        void BuildSidebar() {
+            // Main sidebar panel
+            sidebar = gcnew Panel();
+            sidebar->BackColor = Color::FromArgb(12, 12, 12);
+            sidebar->Size = Drawing::Size(240, 900);
+            sidebar->Location = Point(0, 0);
+            this->Controls->Add(sidebar);
+
+            // Logo + title at top
+            //String^ basePath = AppDomain::CurrentDomain->BaseDirectory;
+            //String^ logoPath = System::IO::Path::Combine(basePath, "Assets\\vesper.png");
+
+            //sidebarLogo = gcnew PictureBox();
+            //sidebarLogo->Image = Image::FromFile(logoPath);
+            //sidebarLogo->SizeMode = PictureBoxSizeMode::Zoom;
+            //sidebarLogo->Size = Drawing::Size(40, 40);
+            //sidebarLogo->Location = Point(14, 14);
+            //sidebarLogo->BackColor = Color::Transparent;
+            //sidebar->Controls->Add(sidebarLogo);
+
+            sidebarTitle = gcnew Label();
+            sidebarTitle->Text = L"VESPER";
+            sidebarTitle->ForeColor = Color::White;
+            sidebarTitle->Font = gcnew Drawing::Font("Courier New", 14, FontStyle::Bold);
+            sidebarTitle->AutoSize = true;
+            sidebarTitle->Location = Point(75, 22);
+            sidebarTitle->BackColor = Color::Transparent;
+            sidebar->Controls->Add(sidebarTitle);
+
+            // Red line under logo area
+            Panel^ topDivider = gcnew Panel();
+            topDivider->BackColor = Color::FromArgb(180, 0, 0);
+            topDivider->Size = Drawing::Size(240, 1);
+            topDivider->Location = Point(0, 70);
+            sidebar->Controls->Add(topDivider);
+
+            // Nav items
+            BuildNavButton(L"  Dashboard", 0, 90);
+            BuildNavButton(L"  Reconnaissance", 1, 140);
+            BuildNavButton(L"  Network", 2, 190);
+            BuildNavButton(L"  Exploitation", 3, 240);
+            BuildNavButton(L"  Post Exploitation", 4, 290);
+            BuildNavButton(L"  Settings", 5, 340);
+
+            // Bottom divider
+            Panel^ botDivider = gcnew Panel();
+            botDivider->BackColor = Color::FromArgb(180, 0, 0);
+            botDivider->Size = Drawing::Size(240, 1);
+            botDivider->Location = Point(0, 820);
+            sidebar->Controls->Add(botDivider);
+
+            // User label bottom
+            // Sidebar scramble setup
+            scrambleChars = L"!@#$%^&*01{}[]<>?/\\|~`ABCDEFabcdef";
+            targetWord = L"VESPER";
+            resolvedCount = 0;
+            scrambleTick = 0;
+            scrambleLimit = 8;
+            idleTick = 0;
+            scrambling = true;
+            rng = gcnew Random();
+
+            scrambleTimer = gcnew Timer();
+            scrambleTimer->Interval = 50;
+            scrambleTimer->Tick += gcnew EventHandler(this, &MainWindow::OnScrambleTick);
+            scrambleTimer->Start();
+        }
+
+        void BuildNavButton(String^ text, int index, int yPos) {
+            Button^ btn = gcnew Button();
+            btn->Text = text;
+            btn->ForeColor = Color::FromArgb(180, 180, 180);
+            btn->Font = gcnew Drawing::Font("Courier New", 10, FontStyle::Regular);
+            btn->Size = Drawing::Size(240, 42);
+            btn->Location = Point(0, yPos);
+            btn->FlatStyle = FlatStyle::Flat;
+            btn->FlatAppearance->BorderSize = 0;
+            btn->BackColor = Color::Transparent;
+            btn->TextAlign = ContentAlignment::MiddleLeft;
+            btn->Tag = index;
+            btn->Cursor = Cursors::Hand;
+            sidebar->Controls->Add(btn);
+        }
+
+        void BuildTrayIcon(String^ icoPath) {
             trayIcon = gcnew NotifyIcon();
             trayIcon->Icon = gcnew System::Drawing::Icon(icoPath);
             trayIcon->Text = L"Vesper";
             trayIcon->Visible = true;
 
-            //Tray click
             trayMenu = gcnew System::Windows::Forms::ContextMenuStrip();
             trayMenu->Items->Add(L"Open", nullptr, gcnew EventHandler(this, &MainWindow::OnTrayOpen));
             trayMenu->Items->Add(L"-");
             trayMenu->Items->Add(L"Exit", nullptr, gcnew EventHandler(this, &MainWindow::OnTrayExit));
             trayIcon->ContextMenuStrip = trayMenu;
-
-            //Double click tray
             trayIcon->DoubleClick += gcnew EventHandler(this, &MainWindow::OnTrayOpen);
-
-            // Scramble timer — slower tick for performance
-            scrambleTimer = gcnew Timer();
-            scrambleTimer->Interval = 50;
-            scrambleTimer->Tick += gcnew EventHandler(this, &MainWindow::OnScrambleTick);
-            scrambleTimer->Start();
-
-            // Center title after form loads
-            this->Shown += gcnew EventHandler(this, &MainWindow::OnShown);
         }
 
-    private:
-        Label^ titleLabel;
-        Panel^ separator;
-        Timer^ scrambleTimer;
-        NotifyIcon^ trayIcon;
-        System::Windows::Forms::ContextMenuStrip^ trayMenu;
-        String^ targetWord;
-        String^ scrambleChars;
-        int     resolvedCount;
-        int     scrambleTick;
-        int     scrambleLimit;
-        //bool    looping;
-        Random^ rng;
+        void OnShown(Object^ sender, EventArgs^ e) {}
 
-        wchar_t GetRandomChar() {
-            return scrambleChars[rng->Next(scrambleChars->Length)];
+        void OnResize(Object^ sender, EventArgs^ e) {
+            if (this->WindowState == FormWindowState::Minimized)
+                this->Hide();
         }
 
-        String^ BuildScrambleText() {
-            System::Text::StringBuilder^ sb = gcnew System::Text::StringBuilder();
-
-            for (int i = 0; i < resolvedCount; i++) {
-                sb->Append(targetWord[i]);
-            }
-            for (int i = resolvedCount; i < targetWord->Length; i++) {
-                sb->Append(GetRandomChar());
-            }
-
-            return sb->ToString();
-        }
-
-        void OnScrambleTick(Object^ sender, EventArgs^ e) {
-            titleLabel->Left = (this->ClientSize.Width - titleLabel->Width) / 2;
-            scrambleTick++;
-            titleLabel->Text = BuildScrambleText();
-
-            if (scrambleTick >= scrambleLimit) {
-                scrambleTick = 0;
-                resolvedCount++;
-
-                if (resolvedCount >= targetWord->Length) {
-                    // Full word resolved — pause then restart loop
-                    titleLabel->Text = targetWord;
-                    resolvedCount = 0;
-                }
-            }
-        }
-
-        void OnShown(Object^ sender, EventArgs^ e) {
-            titleLabel->Left = (this->ClientSize.Width - titleLabel->Width) / 2;
-        }
-
-        //Minimize
         void OnFormClosing(Object^ sender, FormClosingEventArgs^ e) {
             if (e->CloseReason == CloseReason::UserClosing) {
                 e->Cancel = true;
                 this->Hide();
-                trayIcon->ShowBalloonTip(1000, L"Vesper", L"Running in background", ToolTipIcon::None);
-            }
-        }
-
-        void OnResize(Object^ sender, EventArgs^ e) {
-            if (this->WindowState == FormWindowState::Minimized) {
-                this->Hide();
+                trayIcon->ShowBalloonTip(1000, L"Vesper", L"Running in background.", ToolTipIcon::None);
             }
         }
 
@@ -149,9 +172,48 @@ namespace Vesper {
             Application::Exit();
         }
 
+        wchar_t GetRandomChar() {
+            return scrambleChars[rng->Next(scrambleChars->Length)];
+        }
+
+        String^ BuildScrambleText() {
+            System::Text::StringBuilder^ sb = gcnew System::Text::StringBuilder();
+            for (int i = 0; i < resolvedCount; i++)
+                sb->Append(targetWord[i]);
+            for (int i = resolvedCount; i < targetWord->Length; i++)
+                sb->Append(GetRandomChar());
+            return sb->ToString();
+        }
+
+        void OnScrambleTick(Object^ sender, EventArgs^ e) {
+            if (scrambling) {
+                scrambleTick++;
+                sidebarTitle->Text = BuildScrambleText();
+
+                if (scrambleTick >= scrambleLimit) {
+                    scrambleTick = 0;
+                    resolvedCount++;
+
+                    if (resolvedCount >= targetWord->Length) {
+                        sidebarTitle->Text = targetWord;
+                        resolvedCount = 0;
+                        scrambling = false;
+                        idleTick = 0;
+                    }
+                }
+            }
+            else {
+                // Wait 2 minutes before scrambling again
+                idleTick++;
+                if (idleTick >= 2400) {
+                    scrambling = true;
+                    idleTick = 0;
+                }
+            }
+        }
+
     protected:
         ~MainWindow() {
-            if (scrambleTimer != nullptr) scrambleTimer->Stop();
             if (trayIcon != nullptr) trayIcon->Visible = false;
         }
     };

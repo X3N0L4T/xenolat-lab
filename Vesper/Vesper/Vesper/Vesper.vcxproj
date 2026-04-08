@@ -127,7 +127,8 @@
     <ClCompile Include="Vesper.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MainWindow.h">
+    <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="MainWindow_old.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="resource.h" />
