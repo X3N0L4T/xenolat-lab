@@ -16,7 +16,7 @@
 
 Vesper is an offensive security multi-tool built in C++ using Windows Forms (CLR). Reconnaissance, network analysis, exploitation assistance, and post-exploitation — one interface.
 
-> ⚠️ For authorized penetration testing and security research only.
+> For authorized penetration testing and security research only.
 
 ---
 
@@ -67,8 +67,7 @@ Open `Vesper.sln` in Visual Studio and press **F5**.
 - Visual Studio with C++/CLR workload
 - .NET Framework 4.7.2+
 
-
-```
+---
 
 ## Stack
 
