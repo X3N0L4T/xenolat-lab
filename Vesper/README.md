@@ -24,13 +24,17 @@ Vesper is an offensive security multi-tool built in C++ using Windows Forms (CLR
 
 | Module | Status |
 |---|---|
-| Splash Screen |  Complete |
-| Main Window Shell |  Complete |
-| Reconnaissance |  Planned |
-| Network Analysis |  Planned |
-| Exploitation Assistance |  Planned |
-| Post Exploitation |  Planned |
-| Reporting |  Planned |
+| Splash Screen | Complete |
+| Main Window Shell | Complete |
+| Sidebar Navigation | Complete |
+| Top Bar | Complete |
+| Dashboard | Complete |
+| Tray Icon | Complete |
+| Reconnaissance | Planned |
+| Network Analysis | Planned |
+| Exploitation Assistance | Planned |
+| Post Exploitation | Planned |
+| Reporting | Planned |
 
 ---
 
@@ -41,6 +45,8 @@ Vesper/
 ├── SplashScreen.cpp
 ├── MainWindow.h
 ├── MainWindow.cpp
+├── Modules/
+│   └── Dashboard.h
 ├── Assets/
 ├── Vesper.vcxproj
 └── Vesper.sln
@@ -48,19 +54,21 @@ Vesper/
 ---
 
 ## Build
+
 ```bash
 git clone https://github.com/X3N0L4T/xenolat-lab.git
 cd xenolat-lab/Vesper
 ```
 
-Open `Vesper.sln` in Visual Studio → **F5**
+Open `Vesper.sln` in Visual Studio and press **F5**.
 
 **Requirements**
 - Windows 10 / 11
 - Visual Studio with C++/CLR workload
 - .NET Framework 4.7.2+
 
----
+
+```
 
 ## Stack
 
@@ -75,8 +83,12 @@ Open `Vesper.sln` in Visual Studio → **F5**
 ## Roadmap
 
 - [x] Project scaffold
-- [x] Animated splash screen
-- [x] Main window with scramble header
+- [x] Animated logo splash screen
+- [x] Sidebar navigation
+- [x] Top bar with search and task button
+- [x] Dashboard module
+- [x] System tray icon with context menu
+- [ ] Nav button routing between modules
 - [ ] Reconnaissance module
 - [ ] Network analysis module
 - [ ] Exploitation assistance module
