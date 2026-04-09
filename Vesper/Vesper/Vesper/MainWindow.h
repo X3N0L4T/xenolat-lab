@@ -1,4 +1,5 @@
 #pragma once
+#include "Modules/Dashboard.h"
 
 namespace Vesper {
 
@@ -23,6 +24,8 @@ namespace Vesper {
 
             BuildSidebar();
             BuildTopBar();
+            BuildContentArea();
+            LoadDashboard();
             BuildTrayIcon(icoPath);
 
             this->Shown += gcnew EventHandler(this, &MainWindow::OnShown);
@@ -36,6 +39,7 @@ namespace Vesper {
         Panel^ sidebar;
         Label^ sidebarTitle;
         Panel^ topBar;
+        Panel^ contentArea;
         TextBox^ searchBox;
         Button^ newTaskBtn;
         String^ scrambleChars;
@@ -47,6 +51,7 @@ namespace Vesper {
         bool    scrambling;
         Random^ rng;
         Timer^ scrambleTimer;
+        Vesper::Modules::Dashboard^ dashboard;
 
         // Tray
         NotifyIcon^ trayIcon;
@@ -120,6 +125,14 @@ namespace Vesper {
             scrambleTimer->Start();
         }
 
+        void BuildContentArea() {
+            contentArea = gcnew Panel();
+            contentArea->BackColor = Color::FromArgb(8, 8, 8);
+            contentArea->Size = Drawing::Size(1110, 845);
+            contentArea->Location = Point(240, 55);
+            this->Controls->Add(contentArea);
+        }
+
         void BuildNavButton(String^ text, int index, int yPos) {
             Button^ btn = gcnew Button();
             btn->Text = text;
@@ -189,6 +202,14 @@ namespace Vesper {
             newTaskBtn->FlatAppearance->BorderSize = 0;
             newTaskBtn->Cursor = Cursors::Hand;
             topBar->Controls->Add(newTaskBtn);
+        }
+
+        void LoadDashboard() {
+            dashboard = gcnew Vesper::Modules::Dashboard(
+                contentArea->Width,
+                contentArea->Height
+            );
+            contentArea->Controls->Add(dashboard);
         }
 
         void OnSearchFocus(Object^ sender, EventArgs^ e) {

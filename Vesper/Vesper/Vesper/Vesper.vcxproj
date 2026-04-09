@@ -127,10 +127,12 @@
     <ClCompile Include="Vesper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Dashboard.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="MainWindow_old.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="Modules\Dashboard.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SplashScreen.h">
       <FileType>CppForm</FileType>
